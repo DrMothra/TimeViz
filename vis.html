@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <title>Visualiser</title>
+    <script type="text/javascript" src="js/three68.js"></script>
+    <script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+    <script type="text/javascript" src="fonts/helvetiker_regular.typeface.js"></script>
+    <script type="text/javascript" src="js/TrackballControls.js"></script>
+    <script type="text/javascript" src="js/dat.gui.js"></script>
+    <script type="text/javascript" src="js/Blob.js"></script>
+    <script type="text/javascript" src="js/canvas-toBlob.js"></script>
+    <script type="text/javascript" src="js/FileSaver.js"></script>
+    <script type="text/javascript" src="js/baseApp.js"></script>
+    <script type="text/javascript" src="js/dataLoader.js"></script>
+    <script type="text/javascript" src="js/visual.js"></script>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link href="css/visStyles.css?v=0.3" rel="stylesheet" type="text/css">
+</head>
+<body>
+<!-- Stats output -->
+<div id="Stats-output">
+</div>
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+<!-- Start menu -->
+<div class="version">
+    <span>Visualiser (read only)</span>
+</div>
+<div class="camControls">
+    <div class="singleButton">
+        <button id="camFront" class="pure-button pure-button-primary">Front</button>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 doubleButton">
+            <button id="camLeft" class="pure-button pure-button-primary">Left</button>
+        </div>
+        <div class="pure-u-1-2 doubleButton">
+            <button id="camRight" class="pure-button pure-button-primary">Right</button>
+        </div>
+    </div>
+    <div class="singleButton">
+        <button id="camTop" class="pure-button pure-button-primary">Top</button>
+    </div>
+</div>
+<!-- Info panel -->
+<div class="info">
+    <div class="infoHeader">
+        <p>Information</p>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Year:
+        </div>
+        <div id="currentYear" class="pure-u-1-2 infoCell">
+            0000
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Start:
+        </div>
+        <div id="startYear" class="pure-u-1-2 infoCell">
+            0000
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            End:
+        </div>
+        <div id="endYear" class="pure-u-1-2 infoCell">
+            0000
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Number:
+        </div>
+        <div id="rendered" class="pure-u-1-2 infoCell">
+            00
+        </div>
+    </div>
+</div>
+<div class="screenShot">
+    <button id="screen" class="vis-button pure-button">Screenshot</button>
+</div>
+<div id="nodePanel" class="nodeInfo" style="display: none">
+    <div id="Project name" class="infoHeader">
+        Project Name
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Author:
+        </div>
+        <div id="Designer/Author" class="pure-u-1-2 infoCell">
+            TG
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Source:
+        </div>
+        <div id="Source" class="pure-u-1-2 infoCell">
+            www.nottingham.ac.uk
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Video:
+        </div>
+        <div id="Video" class="pure-u-1-2 infoCell">
+            www.youtube.com
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            City:
+        </div>
+        <div id="City" class="pure-u-1-2 infoCell">
+            Nottingham
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Country:
+        </div>
+        <div id="Country" class="pure-u-1-2 infoCell">
+            UK
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Occupancy:
+        </div>
+        <div id="Occupancy" class="pure-u-1-2 infoCell">
+            Multiple
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Motivation:
+        </div>
+        <div id="Motivation" class="pure-u-1-2 infoCell">
+            Research
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Type:
+        </div>
+        <div id="Type" class="pure-u-1-2 infoCell">
+            Interactive
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Input:
+        </div>
+        <div id="input/output" class="pure-u-1-2 infoCell">
+            Digital
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Dimensions:
+        </div>
+        <div id="dimensions" class="pure-u-1-2 infoCell">
+            Spatial
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Timescale:
+        </div>
+        <div id="time scale" class="pure-u-1-2 infoCell">
+            Delay
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Adaptation:
+        </div>
+        <div id="adaptation" class="pure-u-1-2 infoCell">
+            kinetic
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Reacts:
+        </div>
+        <div id="reacts to" class="pure-u-1-2 infoCell">
+            Body
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Interaction:
+        </div>
+        <div id="interaction method" class="pure-u-1-2 infoCell">
+            Breath
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-2 infoCell">
+            Tag:
+        </div>
+        <div id="Tag" class="pure-u-1-2 infoCell">
+            affectivity
+        </div>
+    </div>
+</div>
+
+<div class="presets">
+    <div class="singleButton">
+        <button id="presetSave" class="pure-button pure-button-primary">Save</button>
+    </div>
+    <div class="pure-g controls">
+        <div class="pure-u-1-2 singleControl">
+            <button id="presetBackward" class="button-xsmall pure-button"><<</button>
+        </div>
+        <div class="pure-u-1-2 singleControl">
+            <button id="presetForward" class="button-xsmall pure-button">>></button>
+        </div>
+    </div>
+    <div id="presetNum" class="singleButtonLeft mainText">
+        Preset : */*
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+/* Styles for webgl visualisations */
+
+body {
+    /* set margin to 0 and overflow to hidden, to go fullscreen */
+    margin: 0;
+    overflow: hidden;
+}
+.version {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #7fa5ff;
+}
+.mainButton {
+    border-radius: 5px;
+    position: absolute;
+    padding: 5px;
+    background-color: rgba(150, 150, 150, 0.5);
+    overflow: hidden;
+    color: #7fa5ff;
+}
+.mainText {
+    background-color: rgba(150, 150, 150, 0.0);
+    overflow: hidden;
+    color: #7fa5ff;
+}
+#loadButton {
+    top: 50px;
+    left: 75px;
+}
+.upload {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: 0;
+    padding: 0px;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    background-color: #004040;
+    cursor: pointer;
+}
+.camControls {
+    position: absolute;
+    top: 110px;
+    left: 40px;
+    background-color: rgba(150, 150, 150, 0);
+    color: #7fa5ff;
+}
+.singleButton {
+    text-align: center;
+    margin: 10px;
+}
+.singleButtonLeft {
+    text-align: left;
+    margin-top: 10px;
+    padding-left: 5px;
+}
+.doubleButton {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0px;
+}
+.info {
+    min-width: 150px;
+    padding: 5px;
+    position: absolute;
+    border-radius: 5px;
+    top: 280px;
+    left: 30px;
+    background-color: rgba(150, 150, 150, 0.5);
+    color: #7fa5ff;
+    margin: 0px;
+}
+.infoCell {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+.infoHeader {
+    text-align: center;
+}
+.nodeInfo {
+    width: 300px;
+    top: 300px;
+    left: 300px;
+    padding: 5px;
+    position: absolute;
+    border-radius: 5px;
+    background-color: rgba(119, 119, 119, 0.50);
+    color: #7fa5ff;
+    margin: 0px;
+}
+.vis-button {
+    background-color: rgba(150, 150, 150, 0.5);
+    color: #7fa5ff;
+}
+.screenShot {
+    position: absolute;
+    top: 485px;
+    left: 50px;
+    /*padding: 5px;*/
+}
+.presets {
+    position: absolute;
+    top: 550px;
+    left: 60px;
+}
+.controls {
+    margin: 0px;
+}
+.singleControl {
+    margin: 0px;
+    text-align: center;
+}
+.button-xsmall {
+    font-size: 70%;
+}
