@@ -347,8 +347,10 @@ VisApp.prototype.createGUI = function() {
     this.guiControls = new function() {
         this.font = 'Arial';
         this.fontSize = 18;
-        this.scaleX = 10;
-        this.scaleY = 5;
+        this.fontWidth = 10;
+        this.fontHeight = 5;
+        this.xAxisScale = 1.001;
+        this.yAxisScale = 1;
         this.filename = '';
         this.ShowLabels = true;
         this.LabelTop = '';
@@ -369,55 +371,65 @@ VisApp.prototype.createGUI = function() {
     var gui = new dat.GUI();
 
     //Folders
-    var main = this;
+    var _this = this;
     gui.add(this.guiControls, 'filename', this.filename).listen();
     this.guiAppear = gui.addFolder("Appearance");
     var font = this.guiAppear.add(this.guiControls, 'font');
     font.onChange(function(value) {
-        main.guiChanged();
+        _this.guiChanged();
     });
 
     var fontSize = this.guiAppear.add(this.guiControls, 'fontSize', 10, 36);
     fontSize.onChange(function(value) {
-        main.guiChanged();
+        _this.guiChanged();
     });
 
-    var scaleX = this.guiAppear.add(this.guiControls, 'scaleX', 1, 50);
-    scaleX.onChange(function(value) {
-        main.guiChanged();
+    var fontWidth = this.guiAppear.add(this.guiControls, 'fontWidth', 1, 50);
+    fontWidth.onChange(function(value) {
+        _this.guiChanged();
     });
 
-    var scaleY = this.guiAppear.add(this.guiControls, 'scaleY', 1, 50);
-    scaleY.onChange(function(value) {
-        main.guiChanged();
+    var fontHeight = this.guiAppear.add(this.guiControls, 'fontHeight', 1, 50);
+    fontHeight.onChange(function(value) {
+        _this.guiChanged();
+    });
+
+    var xAxisScale = this.guiAppear.add(this.guiControls, 'xAxisScale', 0.9, 1.1, 0.01);
+    xAxisScale.onChange(function(value) {
+        _this.guiChanged();
+    });
+
+    var yAxisScale = this.guiAppear.add(this.guiControls, 'yAxisScale', 0.01, 5).step(0.001);
+    yAxisScale.onChange(function(value) {
+        _this.guiChanged();
     });
 
     var renderStyle = this.guiAppear.add(this.guiControls, 'RenderStyle', ['Cull', 'Colour', 'Transparent']).onChange(function(value) {
-        main.styleChanged(value);
+        _this.styleChanged(value);
     });
     renderStyle.listen();
 
     this.guiAppear.add(this.guiControls, 'NodeStyle', ['Sphere', 'Cube', 'Diamond']).onChange(function(value) {
-        main.updateRequired = true;
+        _this.updateRequired = true;
     });
 
     this.guiAppear.addColor(this.guiControls, 'Text').onChange(function(value) {
-        main.textColourChanged(value);
+        _this.textColourChanged(value);
     });
     this.guiAppear.addColor(this.guiControls, 'Node').onChange(function(value) {
-        main.nodeColourChanged(value);
+        _this.nodeColourChanged(value);
     });
     this.guiAppear.addColor(this.guiControls, 'Slider').onChange(function(value) {
-        main.sliderColourChanged(value);
+        _this.sliderColourChanged(value);
     });
     this.guiAppear.addColor(this.guiControls, 'Ground').onChange(function(value) {
-        main.groundColourChanged(value);
+        _this.groundColourChanged(value);
     });
     this.guiAppear.addColor(this.guiControls, 'Background').onChange(function(value) {
-        main.backgroundColourChanged(value);
+        _this.backgroundColourChanged(value);
     });
     this.guiAppear.add(this.guiControls, 'ShowLabels').onChange(function(value) {
-        main.labelChanged(value);
+        _this.labelChanged(value);
     });
     this.guiData = gui.addFolder("Data");
     this.gui = gui;
@@ -467,6 +479,8 @@ VisApp.prototype.backgroundColourChanged = function(value) {
 VisApp.prototype.analyseItem = function(item, updatedData) {
     //Analyse this item and adjust appearance accordingly
     var update = null;
+    if(!updatedData) return null;
+
     //See if item in updated data
     var key = item[this.xAxisName];
     if(key in updatedData) {
@@ -500,7 +514,7 @@ VisApp.prototype.generateData = function() {
             break;
 
         case 'Cube':
-            nodeGeometry = new THREE.CubeGeometry(2, 2, 2);
+            nodeGeometry = new THREE.BoxGeometry(2, 2, 2);
             break;
 
         case 'Diamond':
@@ -561,8 +575,8 @@ VisApp.prototype.generateData = function() {
             var nodeMaterial = renderState == RENDER_NORMAL ? defaultMaterial : renderStyle == RENDER_COLOUR ? colourMaterial : transparentMaterial;
             //var node = new THREE.Mesh(sphereGeometry, updateRequired ? updateRequired.material : material);
             var node = new THREE.Mesh(nodeGeometry, nodeMaterial);
-            node.position.x = item[this.xAxisName] * 1.5 - 75;
-            node.position.y = item[this.yAxisName] - 50;
+            node.position.x = item[this.xAxisName] * this.guiControls.xAxisScale;
+            node.position.y = item[this.yAxisName] * this.guiControls.yAxisScale;
             node.position.z = this.sliderEnabled ? (item[this.timeAxis]-this.yearMin)/(this.yearMax - this.yearMin) * this.GROUND_DEPTH - this.GROUND_DEPTH/2 : 0;
             var labelPos = new THREE.Vector3();
             labelPos.x = node.position.x;
@@ -601,7 +615,7 @@ VisApp.prototype.getDataItem = function(name) {
 VisApp.prototype.generateLabels = function(topName, bottomName, position, colour, opacity) {
 
     var fontSize = this.guiControls.fontSize;
-    var scale = new THREE.Vector3(this.guiControls.scaleX, this.guiControls.scaleY, 1);
+    var scale = new THREE.Vector3(this.guiControls.fontWidth, this.guiControls.fontHeight, 1);
     position.top = true;
 
     if(topName) {
@@ -653,13 +667,11 @@ function createLabel(name, position, scale, colour, fontSize, opacity) {
     texture.needsUpdate = true;
 
     //texture.needsUpdate = true;
-    var align = position.top ? THREE.SpriteAlignment.bottomCenter : THREE.SpriteAlignment.topCenter;
     var spriteMaterial = new THREE.SpriteMaterial({
             //color: color,
             transparent: false,
             opacity: opacity,
             useScreenCoordinates: false,
-            alignment: align,
             blending: THREE.AdditiveBlending,
             map: texture}
     );
@@ -1012,7 +1024,7 @@ function addGroundPlane(scene, width, height) {
 function addTimeSlider(group, width, height, depth) {
     //Create time slider box
     //DEBUG - DEPTH NEEDS REWORKING
-    var boxGeometry = new THREE.CubeGeometry(width, height, 1, 4, 4, 4);
+    var boxGeometry = new THREE.BoxGeometry(width, height, 1, 4, 4, 4);
     var boxMaterial = new THREE.MeshPhongMaterial({color: 0x5f7c9d, transparent: true, opacity: 0.4, depthTest: false});
     var box = new THREE.Mesh(boxGeometry, boxMaterial);
     box.name = 'timeSlider';
