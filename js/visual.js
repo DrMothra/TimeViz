@@ -268,7 +268,7 @@ VisApp.prototype.createScene = function() {
         _this.generateData();
     };
 
-    dataLoad.load("data/asteroid.json", dataParser);
+    dataLoad.load("data/horror.json", dataParser);
 };
 
 VisApp.prototype.removeNodes = function() {
@@ -1030,8 +1030,8 @@ $(document).ready(function() {
     var container = document.getElementById("WebGL-output");
     var app = new VisApp();
     app.init(container);
-    app.createScene();
     app.createGUI();
+    app.createScene();
 
     //GUI callbacks
     $("#camFront").on("click", function(evt) {

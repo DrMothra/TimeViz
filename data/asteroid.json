@@ -1,7 +1,0 @@
-[
-{"CometName":"(2015 BA513)","year":"2015-Jan-18 21:32","NominalDistance":"0.0101","MinimumDistance":"0.0099","RelativeVel":21.51,"InfinityVel":21.50,"SigmaN":203,"MagnitudeH":25.8},
-{"CometName":"(2015 AK1)","year":"2015-Jan-18 23:17","NominalDistance":"0.0143","MinimumDistance":"0.0143","RelativeVel":12.17,"InfinityVel":12.15,"SigmaN":1.47e+03,"MagnitudeH":24.4},
-{"CometName":"(2015 BB)","year":"2015-Jan-19 01:20","NominalDistance":"0.0346","MinimumDistance":"0.0345","RelativeVel":15.78,"InfinityVel":15.77,"SigmaN":728,"MagnitudeH":24.9},
-{"CometName":"(2015 BD509)","year":"2015-Jan-19 06:41","NominalDistance":"0.0545","MinimumDistance":"0.0543","RelativeVel":15.69,"InfinityVel":15.69,"SigmaN":606,"MagnitudeH":23.5},
-{"CometName":"(2015 BK510)","year":"2015-Jan-19 09:14","NominalDistance":"0.0184","MinimumDistance":"0.0182","RelativeVel":17.20,"InfinityVel":17.20,"SigmaN":332,"MagnitudeH":25.7}
-]
