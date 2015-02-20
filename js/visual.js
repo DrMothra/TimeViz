@@ -172,6 +172,8 @@ VisApp.prototype.init = function(container) {
     //Camera recording
     this.camPos = [];
     this.currentCamPos = -1;
+    //Lights
+    this.lightRange = 500;
 };
 
 VisApp.prototype.update = function() {
@@ -250,12 +252,12 @@ VisApp.prototype.createScene = function() {
     this.axesGroup = new THREE.Object3D();
     this.axesGroup.name = "groupSlider";
     addAxes(this.axesGroup);
-    this.GROUND_DEPTH = 240;
-    this.GROUND_WIDTH = 180;
+    this.GROUND_DEPTH = 480;
+    this.GROUND_WIDTH = 360;
     addGroundPlane(this.scene, this.GROUND_WIDTH, this.GROUND_DEPTH);
-    this.SLIDER_WIDTH = 150;
-    this.SLIDER_HEIGHT = 120;
-    this.SLIDER_DEPTH = 10;
+    this.SLIDER_WIDTH = 300;
+    this.SLIDER_HEIGHT = 240;
+    this.SLIDER_DEPTH = 20;
     addTimeSlider(this.axesGroup, this.SLIDER_WIDTH, this.SLIDER_HEIGHT, this.SLIDER_DEPTH);
     this.scene.add(this.axesGroup);
     this.sliderEnabled = true;
@@ -266,9 +268,22 @@ VisApp.prototype.createScene = function() {
         _this.data = data;
         _this.generateGUIControls();
         _this.generateData();
+        this.updateRequired = true;
     };
 
     dataLoad.load("data/horror.json", dataParser);
+
+    //Light box
+    var boxGeom = new THREE.BoxGeometry(2, 2, 2);
+    var boxMat = new THREE.MeshBasicMaterial( {color: 0xffffff});
+    var box = new THREE.Mesh(boxGeom, boxMat);
+    box.name = 'lightBox';
+    var light = this.scene.getObjectByName('PointLight', true);
+    if(light) {
+        box.position.copy(light.position);
+    }
+
+    this.scene.add(box);
 };
 
 VisApp.prototype.removeNodes = function() {
@@ -366,6 +381,10 @@ VisApp.prototype.createGUI = function() {
         this.RenderStyle = 'Cull';
         //Node shapes
         this.NodeStyle = 'Sphere';
+        //Light Pos
+        this.LightX = 400;
+        this.LightY = 400;
+        this.LightZ = 400;
     };
 
     var gui = new dat.GUI();
@@ -394,7 +413,7 @@ VisApp.prototype.createGUI = function() {
         _this.guiChanged();
     });
 
-    var xAxisScale = this.guiAppear.add(this.guiControls, 'xAxisScale', 0.9, 1.1, 0.01);
+    var xAxisScale = this.guiAppear.add(this.guiControls, 'xAxisScale', 0.01, 5, 0.01);
     xAxisScale.onChange(function(value) {
         _this.guiChanged();
     });
@@ -431,6 +450,18 @@ VisApp.prototype.createGUI = function() {
     this.guiAppear.add(this.guiControls, 'ShowLabels').onChange(function(value) {
         _this.labelChanged(value);
     });
+
+    //Light
+    this.guiAppear.add(this.guiControls, 'LightX', -this.lightRange, this.lightRange).onChange(function(value) {
+        _this.changeLightPos(value, -1);
+    });
+    this.guiAppear.add(this.guiControls, 'LightY', -this.lightRange, this.lightRange).onChange(function(value) {
+        _this.changeLightPos(value, 0);
+    });
+    this.guiAppear.add(this.guiControls, 'LightZ', -this.lightRange, this.lightRange).onChange(function(value) {
+        _this.changeLightPos(value, 1);
+    });
+
     this.guiData = gui.addFolder("Data");
     this.gui = gui;
 };
@@ -800,24 +831,56 @@ VisApp.prototype.toggleSlider = function(slider) {
     this.updateRequired = true;
 };
 
+VisApp.prototype.changeLightPos = function(value, axis) {
+    //Change light pos
+    var light = this.scene.getObjectByName('PointLight', true);
+    var box = this.scene.getObjectByName('lightBox', true);
+    if(!light || !box) {
+        console.log('No light or light box');
+        return;
+    }
+    switch(axis) {
+        case -1:
+            //X-axis
+            light.position.x = value;
+            box.position.x = value;
+            break;
+
+        case 0:
+            //Y-Axis
+            light.position.y = value;
+            box.position.y = value;
+            break;
+
+        case 1:
+            //Z-Axis
+            light.position.z = value;
+            box.position.z = value;
+            break;
+
+        default:
+            break;
+    }
+};
+
 VisApp.prototype.changeView = function(view) {
     //Alter cam view
     this.controls.reset();
     switch (view) {
         case FRONT:
-            this.camera.position.set(0, 0, 150);
+            this.camera.position.set(170, 60, 380);
             break;
         case RIGHT:
-            this.camera.position.set(200, 0, 0);
+            this.camera.position.set(460, 35, 0);
             break;
         case LEFT:
-            this.camera.position.set(-200, 0, 0);
+            this.camera.position.set(-240, 35, 0);
             break;
         case TOP:
-            this.camera.position.set(0, 200, 0);
+            this.camera.position.set(180, 470, 0);
             break;
     }
-    this.camera.lookAt(0, 0, 0);
+    this.controls.setLookAt(new THREE.Vector3(170, 70, 0));
 };
 
 VisApp.prototype.savePreset = function() {
@@ -938,15 +1001,28 @@ VisApp.prototype.reset = function() {
     this.createGUI();
 };
 
+VisApp.prototype.keydown = function(event) {
+    //Do any key processing
+    switch(event.keyCode) {
+        case 80: //P
+            console.log("Cam =", this.camera.position);
+            console.log("Look =", this.controls.getLookAt());
+            break;
+
+        default :
+            break;
+    }
+};
+
 function addAxes(group) {
     //Create axes;
     //Set up common material
     var material = new THREE.MeshPhongMaterial({color: 0x7777ff});
 
     //Add graph axes
-    var axisYHeight = 100;
-    var axisXHeight = 150;
-    var axisWidth = 1;
+    var axisYHeight = 200;
+    var axisXHeight = 300;
+    var axisWidth = 2;
     var cylinderY = new THREE.CylinderGeometry(axisWidth/2, axisWidth/2, axisYHeight, 8, 8, false);
     var cylinderX = new THREE.CylinderGeometry(axisWidth/2, axisWidth/2, axisXHeight, 8, 8, false);
 
@@ -955,15 +1031,15 @@ function addAxes(group) {
 
     //Orientate axes
     axisX.rotation.z = -Math.PI/2;
-    axisX.position.set(0, -axisYHeight/2, 0);
-    axisY.position.set(-axisXHeight/2, 0, 0);
+    axisX.position.set(axisXHeight/2, 0, 0);
+    axisY.position.set(0, axisYHeight/2, 0);
 
     group.add(axisX);
     group.add(axisY);
 
     //Labelling
     var options = {
-        size: 2,
+        size: 4,
         height: 1,
         weight: "normal",
         font: "helvetiker",
@@ -975,18 +1051,18 @@ function addAxes(group) {
         steps: 1
     };
 
-    var textGeom = new THREE.TextGeometry("Embed", options);
-    var xAxisText = new THREE.Mesh(textGeom, material);
-    xAxisText.position.x = 80;
-    xAxisText.position.y = -50;
-    xAxisText.position.z = 0;
-    group.add(xAxisText);
-    textGeom = new THREE.TextGeometry("Recip", options);
-    xAxisText = new THREE.Mesh(textGeom, material);
-    xAxisText.position.x = -77.5;
-    xAxisText.position.y = 52.5;
-    xAxisText.position.z = 0;
-    group.add(xAxisText);
+    var textGeom = new THREE.TextGeometry("Gross", options);
+    var axisText = new THREE.Mesh(textGeom, material);
+    axisText.position.x = 300;
+    axisText.position.y = 0;
+    axisText.position.z = 0;
+    group.add(axisText);
+    textGeom = new THREE.TextGeometry("Rating", options);
+    axisText = new THREE.Mesh(textGeom, material);
+    axisText.position.x = -10;
+    axisText.position.y = 200;
+    axisText.position.z = 0;
+    group.add(axisText);
 }
 
 function addGroundPlane(scene, width, height) {
@@ -995,14 +1071,11 @@ function addGroundPlane(scene, width, height) {
     var texture = THREE.ImageUtils.loadTexture("images/grid.png");
     var planeMaterial = new THREE.MeshLambertMaterial({map: texture, transparent: true, opacity: 0.5});
     var plane = new THREE.Mesh(planeGeometry,planeMaterial);
-
-    //plane.receiveShadow  = true;
+    var overlap = 10;
 
     // rotate and position the plane
     plane.rotation.x=-0.5*Math.PI;
-    plane.position.x=0;
-    plane.position.y=-60;
-    plane.position.z=0;
+    plane.position.set(width/2 - overlap, 0, 0);
 
     scene.add(plane);
 
@@ -1011,9 +1084,8 @@ function addGroundPlane(scene, width, height) {
     planeMaterial = new THREE.MeshLambertMaterial({color: 0x16283c});
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x=-0.5*Math.PI;
-    plane.position.x=0;
-    plane.position.y=-61;
-    plane.position.z=0;
+    plane.position.set(width/2 - overlap, -1, 0);
+
     //Give it a name
     plane.name = 'ground';
 
@@ -1028,9 +1100,7 @@ function addTimeSlider(group, width, height, depth) {
     var boxMaterial = new THREE.MeshPhongMaterial({color: 0x5f7c9d, transparent: true, opacity: 0.4, depthTest: false});
     var box = new THREE.Mesh(boxGeometry, boxMaterial);
     box.name = 'timeSlider';
-    box.position.x = 0;
-    box.position.y = 0;
-    box.position.z = 0;
+    box.position.set(width/2, height/2, 0);
 
     group.add(box);
 }
@@ -1081,6 +1151,10 @@ $(document).ready(function() {
                 alert("Couldn't save screenshot");
             }
         }
+    });
+
+    $(document).keydown(function(event) {
+        app.keydown(event);
     });
 
     app.run();

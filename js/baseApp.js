@@ -75,16 +75,16 @@ BaseApp.prototype.createScene = function() {
     var ambientLight = new THREE.AmbientLight(0x383838);
     this.scene.add(ambientLight);
 
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(300, 300, 300);
-    spotLight.intensity = 1;
-    this.scene.add(spotLight);
+    var pointLight = new THREE.PointLight(0xffffff);
+    pointLight.position.set(400,400,400);
+    pointLight.name = 'PointLight';
+    this.scene.add(pointLight);
 };
 
 BaseApp.prototype.createCamera = function() {
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    this.camera.position.set( 0, 0, 150 );
+    this.camera.position.set( 170, 100, 400 );
 
     console.log('dom =', this.renderer.domElement);
 };
@@ -102,6 +102,9 @@ BaseApp.prototype.createControls = function() {
     this.controls.dynamicDampingFactor = 0.3;
 
     this.controls.keys = [ 65, 83, 68 ];
+
+    var lookAt = new THREE.Vector3(170, 70, 0);
+    this.controls.setLookAt(lookAt);
 };
 
 BaseApp.prototype.update = function() {
