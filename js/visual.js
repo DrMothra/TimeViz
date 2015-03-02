@@ -160,7 +160,7 @@ VisApp.prototype.init = function(container) {
     this.nodesInSlider = 0;
     this.guiControls = null;
     this.dataFile = null;
-    this.filename = "";
+    this.filename = "horror.json";
     //Always have appearance and data folders to gui
     this.guiAppear = null;
     this.guiData = null;
@@ -368,7 +368,7 @@ VisApp.prototype.createGUI = function() {
         this.yAxisScale = 1;
         this.filename = '';
         this.ShowLabels = true;
-        this.LabelTop = '';
+        this.LabelTop = 'Film';
         this.LabelBottom = '';
 
         //Colours
@@ -418,7 +418,7 @@ VisApp.prototype.createGUI = function() {
         _this.guiChanged();
     });
 
-    var yAxisScale = this.guiAppear.add(this.guiControls, 'yAxisScale', 0.01, 5).step(0.001);
+    var yAxisScale = this.guiAppear.add(this.guiControls, 'yAxisScale', 0.01, 25).step(0.001);
     yAxisScale.onChange(function(value) {
         _this.guiChanged();
     });

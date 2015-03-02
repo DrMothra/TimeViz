@@ -31,56 +31,59 @@
 <div class="version">
     <span>Visualiser (read only)</span>
 </div>
+<div id="instructions">
+    <img src="images/info.png">
+</div>
 <div class="camControls">
-    <div class="singleButton">
+    <div>
         <button id="camFront" class="pure-button pure-button-primary">Front</button>
     </div>
     <div class="pure-g">
-        <div class="pure-u-1-2 doubleButton">
+        <div class="pure-u-1-2">
             <button id="camLeft" class="pure-button pure-button-primary">Left</button>
         </div>
-        <div class="pure-u-1-2 doubleButton">
+        <div class="pure-u-1-2">
             <button id="camRight" class="pure-button pure-button-primary">Right</button>
         </div>
     </div>
-    <div class="singleButton">
+    <div>
         <button id="camTop" class="pure-button pure-button-primary">Top</button>
     </div>
 </div>
 <!-- Info panel -->
 <div class="info">
-    <div class="infoHeader">
+    <div id="infoText">
         <p>Information</p>
     </div>
     <div class="pure-g">
-        <div class="pure-u-1-2 infoCell">
+        <div class="pure-u-1-2">
             Year:
         </div>
-        <div id="currentYear" class="pure-u-1-2 infoCell">
+        <div id="currentYear" class="pure-u-1-2">
             0000
         </div>
     </div>
     <div class="pure-g">
-        <div class="pure-u-1-2 infoCell">
+        <div class="pure-u-1-2">
             Start:
         </div>
-        <div id="startYear" class="pure-u-1-2 infoCell">
+        <div id="startYear" class="pure-u-1-2">
             0000
         </div>
     </div>
     <div class="pure-g">
-        <div class="pure-u-1-2 infoCell">
+        <div class="pure-u-1-2">
             End:
         </div>
-        <div id="endYear" class="pure-u-1-2 infoCell">
+        <div id="endYear" class="pure-u-1-2">
             0000
         </div>
     </div>
     <div class="pure-g">
-        <div class="pure-u-1-2 infoCell">
+        <div class="pure-u-1-2">
             Number:
         </div>
-        <div id="rendered" class="pure-u-1-2 infoCell">
+        <div id="rendered" class="pure-u-1-2">
             00
         </div>
     </div>
@@ -88,7 +91,7 @@
 <div class="screenShot">
     <button id="screen" class="vis-button pure-button">Screenshot</button>
 </div>
-<div id="nodePanel" class="nodeInfo" style="display: none">
+<div id="nodePanel" class="nodeInfo hidden">
     <div id="Project name" class="infoHeader">
         Project Name
     </div>

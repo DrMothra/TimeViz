@@ -6,10 +6,27 @@ body {
     overflow: hidden;
 }
 .version {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+    position: fixed;
+    top: 1%;
+    left: 1%;
     color: #7fa5ff;
+}
+.hidden {
+    display: none;
+}
+.centred {
+    text-align: center;
+}
+.left {
+    text-align: left;
+}
+#instructions {
+    position: fixed;
+    top: 4%;
+    left: 3%;
+}
+#instructions img {
+    width: 85%;
 }
 .mainButton {
     border-radius: 5px;
@@ -41,45 +58,46 @@ body {
     cursor: pointer;
 }
 .camControls {
-    position: absolute;
-    top: 110px;
-    left: 40px;
+    position: fixed;
+    top: 12%;
+    left: 0.7%;
     background-color: rgba(150, 150, 150, 0);
     color: #7fa5ff;
 }
-.singleButton {
+.camControls button {
     text-align: center;
-    margin: 10px;
+    margin: 3px;
+    width: 60%;
 }
-.singleButtonLeft {
-    text-align: left;
-    margin-top: 10px;
-    padding-left: 5px;
+#camLeft,
+#camRight {
+    width: 85%;
 }
-.doubleButton {
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 0px;
+#camFront,
+#camTop {
+    margin-left: 20%;
+}
+#infoText {
+    padding-left: 10%;
 }
 .info {
     min-width: 150px;
-    padding: 5px;
+    padding: 5px 0px 5px 20px;
     position: absolute;
     border-radius: 5px;
-    top: 280px;
-    left: 30px;
+    top: 27%;
+    left: 0.7%;
     background-color: rgba(150, 150, 150, 0.5);
     color: #7fa5ff;
     margin: 0px;
 }
-.infoCell {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    overflow: hidden;
+.info .pure-g {
+    margin-bottom: 5%;
 }
 .infoHeader {
     text-align: center;
 }
+
 .nodeInfo {
     width: 300px;
     top: 300px;
