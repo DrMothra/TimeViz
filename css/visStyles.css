@@ -8,7 +8,7 @@ body {
 .version {
     position: fixed;
     top: 1%;
-    left: 1%;
+    left: 1.5%;
     color: #7fa5ff;
 }
 .hidden {
@@ -23,7 +23,7 @@ body {
 #instructions {
     position: fixed;
     top: 4%;
-    left: 3%;
+    left: 4%;
 }
 #instructions img {
     width: 85%;
@@ -60,7 +60,7 @@ body {
 .camControls {
     position: fixed;
     top: 12%;
-    left: 0.7%;
+    left: 1.75%;
     background-color: rgba(150, 150, 150, 0);
     color: #7fa5ff;
 }
@@ -86,7 +86,7 @@ body {
     position: absolute;
     border-radius: 5px;
     top: 27%;
-    left: 0.7%;
+    left: 1%;
     background-color: rgba(150, 150, 150, 0.5);
     color: #7fa5ff;
     margin: 0px;
@@ -115,9 +115,8 @@ body {
 }
 .screenShot {
     position: absolute;
-    top: 485px;
-    left: 50px;
-    /*padding: 5px;*/
+    top: 50%;
+    left: 2.5%;
 }
 .presets {
     position: absolute;

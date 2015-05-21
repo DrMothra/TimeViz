@@ -364,8 +364,8 @@ VisApp.prototype.createGUI = function() {
         this.fontSize = 18;
         this.fontWidth = 10;
         this.fontHeight = 5;
-        this.xAxisScale = 1.001;
-        this.yAxisScale = 1;
+        this.xAxisScale = 1.2;
+        this.yAxisScale = 10;
         this.filename = '';
         this.ShowLabels = true;
         this.LabelTop = 'Film';
@@ -650,7 +650,7 @@ VisApp.prototype.generateLabels = function(topName, bottomName, position, colour
     position.top = true;
 
     if(topName) {
-        var labelTop = createLabel(topName, position, scale, colour, fontSize, opacity);
+        var labelTop = spriteManager.create(topName, position, scale, 32, 1, true);
         //Give sprite a name
         labelTop.name = "Sprite" + this.spritesRendered++;
         this.scene.add(labelTop);
@@ -658,7 +658,7 @@ VisApp.prototype.generateLabels = function(topName, bottomName, position, colour
 
     position.top = false;
     if(bottomName) {
-        var labelBottom = createLabel(bottomName, position, scale, colour, fontSize, opacity);
+        var labelBottom = spriteManager.create(bottomName, position, scale, 32, 1, true);
         //Give sprite a name
         labelBottom.name = "Sprite" + this.spritesRendered++;
         this.scene.add(labelBottom);
@@ -1109,6 +1109,7 @@ function addTimeSlider(group, width, height, depth) {
 var FRONT= 0, RIGHT= 1, LEFT= 2, TOP=3;
 $(document).ready(function() {
     //Initialise app
+    //skel.init();
     var container = document.getElementById("WebGL-output");
     var app = new VisApp();
     app.init(container);
