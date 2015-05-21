@@ -74,6 +74,36 @@ var spriteManager = (function () {
             borderColour = colour != undefined ? 'rgba('+colour.r+','+colour.g+','+colour.b+','+colour.a+')' : borderColour;
         },
 
+        setBorderColour: function(colour) {
+            if(colour != undefined) {
+                var red = Math.round(colour[0]);
+                var green = Math.round(colour[1]);
+                var blue = Math.round(colour[2]);
+
+                borderColour = "rgba(" + red + "," + green + "," + blue + "," + "1.0)";
+            }
+        },
+
+        setBackgroundColour: function(colour) {
+            if(colour != undefined) {
+                var red = Math.round(colour[0]);
+                var green = Math.round(colour[1]);
+                var blue = Math.round(colour[2]);
+
+                backgroundColour = "rgba(" + red + "," + green + "," + blue + "," + "1.0)";
+            }
+        },
+
+        setTextColour: function(colour) {
+            if(colour != undefined) {
+                var red = Math.round(colour[0]);
+                var green = Math.round(colour[1]);
+                var blue = Math.round(colour[2]);
+
+                textColour = "rgba(" + red + "," + green + "," + blue + "," + "1.0)";
+            }
+        },
+
         getSprite: function(name) {
             for(var i=0; i<labelNames.length; ++i) {
                 if(labelNames[i] === name) {

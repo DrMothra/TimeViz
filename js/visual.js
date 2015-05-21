@@ -255,8 +255,8 @@ VisApp.prototype.createScene = function() {
     this.GROUND_DEPTH = 480;
     this.GROUND_WIDTH = 360;
     addGroundPlane(this.scene, this.GROUND_WIDTH, this.GROUND_DEPTH);
-    this.SLIDER_WIDTH = 300;
-    this.SLIDER_HEIGHT = 240;
+    this.SLIDER_WIDTH = 350;
+    this.SLIDER_HEIGHT = 200;
     this.SLIDER_DEPTH = 20;
     addTimeSlider(this.axesGroup, this.SLIDER_WIDTH, this.SLIDER_HEIGHT, this.SLIDER_DEPTH);
     this.scene.add(this.axesGroup);
@@ -373,6 +373,8 @@ VisApp.prototype.createGUI = function() {
 
         //Colours
         this.Text = [255, 255, 255];
+        this.Label = [55, 55, 55];
+        this.Border = [0, 0, 0];
         this.Node = "#7777ff";
         this.Slider = "#5f7c9d";
         this.Ground = '#16283c';
@@ -434,6 +436,12 @@ VisApp.prototype.createGUI = function() {
 
     this.guiAppear.addColor(this.guiControls, 'Text').onChange(function(value) {
         _this.textColourChanged(value);
+    });
+    this.guiAppear.addColor(this.guiControls, 'Label').onChange(function(value) {
+        _this.updateRequired = true;
+    });
+    this.guiAppear.addColor(this.guiControls, 'Border').onChange(function(value) {
+        _this.updateRequired = true;
     });
     this.guiAppear.addColor(this.guiControls, 'Node').onChange(function(value) {
         _this.nodeColourChanged(value);
@@ -625,7 +633,7 @@ VisApp.prototype.generateData = function() {
                 if(renderState != RENDER_NORMAL && renderStyle == RENDER_COLOUR) {
                     colour = [20, 20, 20];
                 }
-                this.generateLabels(item[top], item[bottom], labelPos, colour, nodeMaterial.opacity ? nodeMaterial.opacity : 1);
+                this.generateLabels(item[top], item[bottom], labelPos, colour, this.guiControls.Label, this.guiControls.Border, nodeMaterial.opacity ? nodeMaterial.opacity : 1);
             }
         }
     }
@@ -643,11 +651,22 @@ VisApp.prototype.getDataItem = function(name) {
     return null;
 };
 
-VisApp.prototype.generateLabels = function(topName, bottomName, position, colour, opacity) {
+VisApp.prototype.generateLabels = function(topName, bottomName, position, textColour, labelColour, borderColour, opacity) {
 
     var fontSize = this.guiControls.fontSize;
     var scale = new THREE.Vector3(this.guiControls.fontWidth, this.guiControls.fontHeight, 1);
     position.top = true;
+    if(textColour != undefined) {
+        spriteManager.setTextColour(textColour);
+    }
+
+    if(labelColour != undefined) {
+        spriteManager.setBackgroundColour(labelColour);
+    }
+
+    if(borderColour != undefined) {
+        spriteManager.setBorderColour(borderColour);
+    }
 
     if(topName) {
         var labelTop = spriteManager.create(topName, position, scale, 32, 1, true);
@@ -1021,7 +1040,7 @@ function addAxes(group) {
 
     //Add graph axes
     var axisYHeight = 200;
-    var axisXHeight = 300;
+    var axisXHeight = 350;
     var axisWidth = 2;
     var cylinderY = new THREE.CylinderGeometry(axisWidth/2, axisWidth/2, axisYHeight, 8, 8, false);
     var cylinderX = new THREE.CylinderGeometry(axisWidth/2, axisWidth/2, axisXHeight, 8, 8, false);
@@ -1053,14 +1072,14 @@ function addAxes(group) {
 
     var textGeom = new THREE.TextGeometry("Gross", options);
     var axisText = new THREE.Mesh(textGeom, material);
-    axisText.position.x = 300;
+    axisText.position.x = axisXHeight + 2;
     axisText.position.y = 0;
     axisText.position.z = 0;
     group.add(axisText);
     textGeom = new THREE.TextGeometry("Rating", options);
     axisText = new THREE.Mesh(textGeom, material);
     axisText.position.x = -10;
-    axisText.position.y = 200;
+    axisText.position.y = axisYHeight + 2;
     axisText.position.z = 0;
     group.add(axisText);
 }
