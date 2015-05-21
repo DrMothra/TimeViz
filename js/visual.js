@@ -372,7 +372,7 @@ VisApp.prototype.createGUI = function() {
         this.LabelBottom = '';
 
         //Colours
-        this.Text = [255, 255, 255];
+        this.Text = [255, 184, 57];
         this.Label = [55, 55, 55];
         this.Border = [0, 0, 0];
         this.Node = "#7777ff";
@@ -677,6 +677,7 @@ VisApp.prototype.generateLabels = function(topName, bottomName, position, textCo
 
     position.top = false;
     if(bottomName) {
+        position.y -= 3;
         var labelBottom = spriteManager.create(bottomName, position, scale, 32, 1, true);
         //Give sprite a name
         labelBottom.name = "Sprite" + this.spritesRendered++;
@@ -745,7 +746,7 @@ VisApp.prototype.generateGUIControls = function() {
     this.yAxisName = guiLabels[guiLabels.length-1];
     this.timeAxis = 'year';
     this.tempName = guiLabels[0];
-    guiLabels.splice(guiLabels.length-2, 2);
+    //guiLabels.splice(guiLabels.length-2, 2);
 
     var extraGui = {};
     for(i=0; i<guiLabels.length; ++i) {
