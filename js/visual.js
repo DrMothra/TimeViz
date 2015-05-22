@@ -99,7 +99,7 @@ function eliminateInvalidCells(arr) {
     var out=[];
 
     for(var index=0; index<arr.length; ++index) {
-        if(arr[index] && arr[index] != undefined) {
+        if(arr[index] != null && arr[index] != undefined) {
             out.push(arr[index]);
         }
     }
@@ -268,7 +268,7 @@ VisApp.prototype.createScene = function() {
         _this.data = data;
         _this.generateGUIControls();
         _this.generateData();
-        this.updateRequired = true;
+        _this.updateRequired = true;
     };
 
     dataLoad.load("data/horror.json", dataParser);
@@ -622,7 +622,7 @@ VisApp.prototype.generateData = function() {
             labelPos.y = node.position.y;
             labelPos.z = this.sliderEnabled ? node.position.z : updateRequired ? visited[embed][recip] * -5 : 0;
             //Give node a name
-            node.name = 'Node ' + item[this.tempName];
+            node.name = 'Node ' + this.nodesRendered;
             ++this.nodesRendered;
             nodes.push(node);
             this.scene.add(node);
@@ -745,8 +745,6 @@ VisApp.prototype.generateGUIControls = function() {
     this.xAxisName = guiLabels[guiLabels.length-2];
     this.yAxisName = guiLabels[guiLabels.length-1];
     this.timeAxis = 'year';
-    this.tempName = guiLabels[0];
-    //guiLabels.splice(guiLabels.length-2, 2);
 
     var extraGui = {};
     for(i=0; i<guiLabels.length; ++i) {
@@ -769,8 +767,6 @@ VisApp.prototype.generateGUIControls = function() {
     for(var elem=0; elem<numRecords; ++elem) {
         item = this.data[elem];
         for(var key in item) {
-            //Don't include x or y axis names
-            if(key == this.xAxisName || key == this.yAxisName) continue;
             master[x++][i] = item[key];
         }
         ++i;
@@ -785,9 +781,11 @@ VisApp.prototype.generateGUIControls = function() {
 
     var _this = this;
     this.guiControls.extra = extraGui;
-    for(var label=0; label<guiLabels.length; ++label) {
+    for(var label=1; label<guiLabels.length; ++label) {
         if(guiLabels[label] == this.timeAxis) {
-            master[label].sort();
+            master[label].sort(function(a,b) {
+                return a-b;
+            });
             //Assume this is time-based data
             var max = master[label][master[label].length-1];
             var min = master[label][0];
@@ -814,7 +812,15 @@ VisApp.prototype.generateGUIControls = function() {
         }
         else {
             //Add empty value for default
+            /*
+            if(typeof master[label][0] === 'number') {
+                master[label].sort(function(a,b) {
+                    return a-b;
+                });
+            }
+            */
             master[label].splice(0, 0, "");
+            //master[label][0] = "TG";
             var control = this.guiData.add(this.guiControls.extra, guiLabels[label].toString(), master[label]);
             control.onChange(function(value) {
                 _this.updateRequired = true;
