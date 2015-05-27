@@ -46,7 +46,9 @@ var spriteManager = (function () {
 
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas);
+            texture.minFilter = THREE.LinearFilter;
             texture.needsUpdate = true;
+
 
             //texture.needsUpdate = true;
             var spriteMaterial = new THREE.SpriteMaterial({

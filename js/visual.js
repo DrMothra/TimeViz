@@ -107,35 +107,17 @@ function eliminateInvalidCells(arr) {
     return out;
 }
 
-function populatePanel(data) {
+function populatePanel(data, left, top) {
     //Fill in node panel details and display
     var element = $('#nodePanel');
     element.show();
-    element.css('top', '150px');
-    var left = (window.innerWidth/2) - 100;
-    element.css('left', left + 'px');
+    element.css('top', top-15);
+    element.css('left', left+15);
 
     for(var key in data) {
         var item = document.getElementById(key);
         if (item) {
             item.innerHTML = data[key];
-        }
-    }
-
-    //Set up links
-    var video = $('#Video');
-    if(video) {
-        var link = video[0].innerHTML;
-        if(link) {
-            video[0].innerHTML = '<a href="'+link+'"'+'target="_blank"'+'>Click for video</a>';
-        }
-    }
-
-    var source = $('#Source');
-    if(source) {
-        var link = source[0].innerHTML;
-        if(link) {
-            source[0].innerHTML = '<a href="'+link+'"'+'target="_blank"'+'>Click for source</a>';
         }
     }
 }
@@ -222,23 +204,23 @@ VisApp.prototype.update = function() {
                 var name = node.substr(5, node.length-5);
                 var data = this.getDataItem(name);
                 if(data) {
-                    populatePanel(data);
+                    populatePanel(data, this.mouseRaw.x, this.mouseRaw.y);
                     showingNode = true;
                     //Draw outline around node
-                    this.outlineNode(node);
+                    //this.outlineNode(node);
                     break;
                 }
             }
         }
         if(!showingNode) {
             $("#nodePanel").hide();
-            this.outlineNode(false);
+            //this.outlineNode(false);
         }
         this.pickedObjects.length = 0;
     } else {
         if(clicked) {
             $("#nodePanel").hide();
-            this.outlineNode(false);
+            //this.outlineNode(false);
         }
     }
 };
@@ -572,10 +554,10 @@ VisApp.prototype.generateData = function() {
     var updateRequired;
     this.nodesInSlider = 0;
     for(var i=0; i<this.data.length; ++i) {
-        //Only render nodes with valid embed and recip
+        //Only render nodes with valid axis values
         var item = this.data[i];
-        var embed = item[this.xAxisName];
-        var recip = item[this.yAxisName];
+        var xAxis = item[this.xAxisName];
+        var yAxis = item[this.yAxisName];
         var year = item[this.timeAxis];
         var diff = this.guiControls.Selection/2;
         var minYear = this.guiControls.year - diff;
@@ -584,31 +566,43 @@ VisApp.prototype.generateData = function() {
         var renderStyle = this.renderStyle; //RENDER_TRANSPARENT;
         //DEBUG
         //console.log("Max=", maxYear, " min=", minYear);
-        if(embed >= 0 && recip >= 0) {
+        if(xAxis >= 0 && yAxis >= 0) {
             //Determine how we render this node
             if(year < minYear || year > maxYear) {
                 renderState = RENDER_STYLE;
             } else {
-                ++this.nodesInSlider;
+                //Check any filtering
+                var renderNode = true;
+                for(var key in extraData) {
+                    //Different action for numeric filtering
+                    if(extraData[key] != "" && extraData[key] != item[key]) {
+                        if(typeof extraData[key] === 'number') {
+                            if(extraData[key] <= item[key]) {
+                                renderState = RENDER_STYLE;
+                                renderNode = false;
+                                break;
+                            }
+                        }else {
+                            renderState = RENDER_STYLE;
+                            renderNode = false;
+                            break;
+                        }
+                    }
+                }
+                if(renderNode) ++this.nodesInSlider;
             }
             //Examine data and adjust accordingly
             updateRequired = this.analyseItem(item, updates);
             if(updateRequired) {
-                if(!(embed in visited)) {
-                    visited[embed] = {};
-                    visited[embed][recip] = 0;
+                if(!(x in visited)) {
+                    visited[xAxis] = {};
+                    visited[xAxis][yAxis] = 0;
                 }
                 else {
-                    ++(visited[embed][recip]);
+                    ++(visited[xAxis][yAxis]);
                 }
             }
-            //Check any filtering
-            for(var key in extraData) {
-                if(extraData[key] != "" && extraData[key] != item[key]) {
-                    renderState = RENDER_STYLE;
-                    break;
-                }
-            }
+
             if(renderState != RENDER_NORMAL && renderStyle == RENDER_CULL) continue;
 
             var nodeMaterial = renderState == RENDER_NORMAL ? defaultMaterial : renderStyle == RENDER_COLOUR ? colourMaterial : transparentMaterial;
@@ -620,9 +614,9 @@ VisApp.prototype.generateData = function() {
             var labelPos = new THREE.Vector3();
             labelPos.x = node.position.x;
             labelPos.y = node.position.y;
-            labelPos.z = this.sliderEnabled ? node.position.z : updateRequired ? visited[embed][recip] * -5 : 0;
+            labelPos.z = this.sliderEnabled ? node.position.z : updateRequired ? visited[xAxis][yAxis] * -5 : 0;
             //Give node a name
-            node.name = 'Node ' + this.nodesRendered;
+            node.name = 'Node ' + item[this.nameKey];
             ++this.nodesRendered;
             nodes.push(node);
             this.scene.add(node);
@@ -643,7 +637,7 @@ VisApp.prototype.getDataItem = function(name) {
     //Get data given name
     for(var i=0; i<this.data.length; ++i) {
         var item = this.data[i];
-        if(item["project name"] === name) {
+        if(item[this.nameKey] === name) {
             return item;
         }
     }
@@ -745,6 +739,7 @@ VisApp.prototype.generateGUIControls = function() {
     this.xAxisName = guiLabels[guiLabels.length-2];
     this.yAxisName = guiLabels[guiLabels.length-1];
     this.timeAxis = 'year';
+    this.nameKey = guiLabels[0];
 
     var extraGui = {};
     for(i=0; i<guiLabels.length; ++i) {
@@ -782,13 +777,14 @@ VisApp.prototype.generateGUIControls = function() {
     var _this = this;
     this.guiControls.extra = extraGui;
     for(var label=1; label<guiLabels.length; ++label) {
+        var max, min;
         if(guiLabels[label] == this.timeAxis) {
             master[label].sort(function(a,b) {
                 return a-b;
             });
             //Assume this is time-based data
-            var max = master[label][master[label].length-1];
-            var min = master[label][0];
+            max = master[label][master[label].length-1];
+            min = master[label][0];
             this.yearMax = max;
             this.yearMin =  min;
             this.guiControls.year = (max-min)/2 + min;
@@ -811,20 +807,29 @@ VisApp.prototype.generateGUIControls = function() {
             });
         }
         else {
-            //Add empty value for default
-            /*
+            //Convert all numeric values to sliders
+            var control=null;
             if(typeof master[label][0] === 'number') {
                 master[label].sort(function(a,b) {
                     return a-b;
                 });
+                min = master[label][0];
+                max = master[label][master[label].length-1];
+                //Set default value of field
+                var field = guiLabels[label].toString();
+                this.guiControls.extra[field] = max;
+                control = this.guiData.add(this.guiControls.extra, field, min, max);
+            } else {
+                //Add drop down list of values
+                master[label].splice(0, 0, "");
+                control = this.guiData.add(this.guiControls.extra, guiLabels[label].toString(), master[label]);
             }
-            */
-            master[label].splice(0, 0, "");
-            //master[label][0] = "TG";
-            var control = this.guiData.add(this.guiControls.extra, guiLabels[label].toString(), master[label]);
-            control.onChange(function(value) {
-                _this.updateRequired = true;
-            })
+
+            if(control != null) {
+                control.onChange(function(value) {
+                    _this.updateRequired = true;
+                });
+            }
         }
     }
 
