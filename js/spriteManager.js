@@ -64,7 +64,7 @@ var spriteManager = (function () {
             labelNames.push(name);
             sprite.visible = visible;
 
-            var offset = (400 - textWidth) / 80;
+            var offset = (canvas.width - textWidth) / 80;
             sprite.position.set(position.x+offset, position.y, position.z);
             sprite.scale.set(scale.x, scale.y, 1);
 
