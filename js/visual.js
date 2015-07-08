@@ -671,7 +671,7 @@ VisApp.prototype.generateLabels = function(topName, bottomName, position, textCo
 
     position.top = false;
     if(bottomName) {
-        position.y -= 3;
+        position.y -= (3*scale.y/5);
         var labelBottom = spriteManager.create(bottomName, position, scale, 32, 1, true);
         //Give sprite a name
         labelBottom.name = "Sprite" + this.spritesRendered++;

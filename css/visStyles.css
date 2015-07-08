@@ -24,6 +24,13 @@ body {
 .left {
     text-align: left;
 }
+#title {
+    position: absolute;
+    top: 1%;
+    left: 45%;
+    font-size: 2vw;
+    color: darkred;
+}
 #instructions {
 
 }
