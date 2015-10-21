@@ -1,6 +1,14 @@
 /* Styles for webgl visualisations */
 
 body {
+
+}
+.render {
+    /* set margin to 0 and overflow to hidden, to go fullscreen */
+    margin: 0;
+    overflow: hidden;
+}
+#WebGL-output {
     /* set margin to 0 and overflow to hidden, to go fullscreen */
     margin: 0;
     overflow: hidden;
@@ -149,4 +157,11 @@ body {
 .instructionText p {
     color: white;
     text-align: left;
+}
+.instructionText h3 {
+    text-align: left;
+    color: #303030;
+}
+.instructionText img {
+    width: 50%;
 }
