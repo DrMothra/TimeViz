@@ -3,35 +3,50 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>TimeViz Instructions</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css?v=0.1">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css?v=0.1">
+    <link href="css/visStyles.css?v=0.4" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body id="instructPage">
 
-Welcome to the TimeViz visualisation application. This app gives a demonstration of a more general visualisation tool being developed to visualise multi-dimensional or time-varying data.
-When the page first loads you'll see a number of data items. They may not look too clear but we can soon rectify this with the extensive range of customisation options.
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            &nbsp;
+        </div>
+        <div class="col-md-8 centred">
+            <div id="instructionTitle">
+                <img src="images/ghost.png"> Instructions
+            </div>
+            <div class="instructionText">
+                <p>
+                    Welcome to the TimeViz visualisation application. This app gives a demonstration of a more general visualisation tool being developed to visualise multi-dimensional
+                    or time-varying data. In this example we have used information relating to the highest grossing horror films of all time and cross-referenced this with their
+                    individual ratings as given by film review websites. This illustrates how attributes of the data can be viewed over a period of time.
+                </p>
+                <p>
+                    When the page first loads you'll see a number of data items. You can use the mouse buttons to move around the scene and get a different view of the data
+                    - the left mouse rotates, the middle mouse button
+                    pans around the mouse wheel enables zooming in and out of the scene.
+                </p>
+                <p>
+                    To gain an insight as to how the data varies over time, adjust the view such that you are can see the transparent area that the data is contained within
+                    (you may have to zoom out a little). This represents
+                    both the year that the data is applicable to and the time range under consideration. If you now look at the GUI at the top right then you'll see a label marked
+                    Data. if you click on this then you'll see a couple of sliders that enable you to select the individual year and an appropriate time range. The number of films within
+                    the selected region is displayed in the information panel on the left-hand side (along with all the year data). If you now slide the year slider around you'll see how
+                    much money the films have amassed over the years. As you can imagine the majority of the films appear towards the latter end of the 3D space. However, if you slide back
+                    far enough you'll see that there are a couple of films from the 1970's that can match the revenue of more modern films.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            &nbsp;
+        </div>
+    </div>
 
-You can use the mouse buttons to move around the scene - the left mouse rotates, the middle mouse button pans around the scene and the mouse wheel enables zooming in and out of the scene.
-If you now zoom in you'll see the data items a little more closely as illustrated below:-
-
-<img src="">
-
-If you then look at the GUI on the right hand side and click on Appearance then a list of options appears:-
-
-<img src="">
-
-If you now increase the fontWidth to something like 20 and the fontHeight to something like 10 then the labels should now become much clearer. We'll examine the other options later.
-
-If you close the Appearance option, we'll now examine the data analysis options.
-
-If you click on the Data option then the following items will be displayed:-
-
-<img src="">
-
-If you zoom out and then experiment with the year slider you will see all the films that correspond to the years in question, note the information being updated in the info bar on the left hand
-side.
-
-If you use the left mouse button to rotate around the scene then you can see the range of years being considered. Experiment with the Selection slide to narrow or widen the range of years in the
-view.
-
+</div>
 
 </body>
 </html>

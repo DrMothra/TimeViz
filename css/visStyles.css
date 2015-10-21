@@ -135,3 +135,18 @@ body {
 .button-xsmall {
     font-size: 70%;
 }
+
+#instructionTitle {
+    font-size: 2vw;
+    color: darkred;
+}
+#instructionTitle img {
+    width: 15%;
+}
+#instructPage {
+    background-color: #5c5f64;
+}
+.instructionText p {
+    color: white;
+    text-align: left;
+}
