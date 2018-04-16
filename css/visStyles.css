@@ -240,3 +240,11 @@ input[type=range]:focus::-ms-fill-upper {
     }
 }
 
+@media (min-width: 576px) and (orientation: portrait) {
+    #information {
+        top: 2.5%;
+    }
+    #instructions {
+        width: 7.5%;
+    }
+}
