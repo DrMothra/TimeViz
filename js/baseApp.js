@@ -82,7 +82,7 @@ BaseApp.prototype.createScene = function() {
 
 BaseApp.prototype.createCamera = function() {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    this.camera.position.set( 200, 110, 260 );
+    this.camera.position.set( 450, 150, 420 );
 };
 
 BaseApp.prototype.createControls = function() {

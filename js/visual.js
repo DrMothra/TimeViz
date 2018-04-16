@@ -371,6 +371,7 @@ VisApp.prototype.createGUI = function() {
     };
 
     var gui = new dat.GUI();
+    gui.close();
 
     //Folders
     var _this = this;
@@ -819,7 +820,7 @@ VisApp.prototype.toggleSlider = function(slider) {
 VisApp.prototype.changeView = function(view) {
     //Alter cam view
     this.controls.reset();
-    this.camera.position.set(200, 110, 260);
+    this.camera.position.set(450, 150, 420);
     this.controls.setLookAt(new THREE.Vector3(170, 90, 0));
 };
 
