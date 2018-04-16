@@ -153,6 +153,7 @@ VisApp.prototype.init = function(container) {
     //Camera recording
     this.camPos = [];
     this.currentCamPos = -1;
+    this.mouse.clicked = true;
     //Lights
     this.lightRange = 500;
 };
@@ -189,8 +190,6 @@ VisApp.prototype.update = function() {
     }
 
     //Object selection
-
-
     if(this.pickedObjects.length > 0) {
         //DEBUG
         //console.log("Picked ", this.pickedObjects.length, "objects");
@@ -991,7 +990,7 @@ function addAxes(group) {
 
 function addGroundPlane(scene, width, height) {
     // create the ground plane
-    var planeGeometry = new THREE.PlaneGeometry(width,height,1,1);
+    var planeGeometry = new THREE.PlaneBufferGeometry(width,height,1,1);
     var texture = THREE.ImageUtils.loadTexture("images/grid.png");
     var planeMaterial = new THREE.MeshLambertMaterial({map: texture, transparent: true, opacity: 0.5});
     var plane = new THREE.Mesh(planeGeometry,planeMaterial);
@@ -1004,7 +1003,7 @@ function addGroundPlane(scene, width, height) {
     scene.add(plane);
 
     //Second plane
-    planeGeometry = new THREE.PlaneGeometry(width, height, 1, 1);
+    planeGeometry = new THREE.PlaneBufferGeometry(width, height, 1, 1);
     planeMaterial = new THREE.MeshLambertMaterial({color: 0x16283c});
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x=-0.5*Math.PI;
