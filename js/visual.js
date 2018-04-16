@@ -149,7 +149,6 @@ VisApp.prototype.init = function(container) {
     //Time slider
     this.sliderPos = 0;
     //Rendering style
-    this.renderStyle = RENDER_CULL;
     this.outlineNodeName = null;
     //Camera recording
     this.camPos = [];
@@ -342,13 +341,10 @@ VisApp.prototype.reDraw = function() {
 VisApp.prototype.createGUI = function() {
     //Create GUI - use dat.GUI for now
     this.guiControls = new function() {
-        this.font = 'Arial';
-        this.fontSize = 18;
-        this.fontWidth = 25;
-        this.fontHeight = 15;
+        this.labelWidth = 35;
+        this.labelHeight = 20;
         this.xAxisScale = 1.2;
         this.yAxisScale = 10;
-        this.filename = '';
         this.ShowLabels = true;
         this.LabelTop = 'Film';
         this.LabelBottom = '';
@@ -361,39 +357,23 @@ VisApp.prototype.createGUI = function() {
         this.Slider = "#5f7c9d";
         this.Ground = '#16283c';
         this.Background = '#5c5f64';
-        //Render styles
-        this.RenderStyle = 'Cull';
         //Node shapes
         this.NodeStyle = 'Sphere';
-        //Light Pos
-        this.LightX = 400;
-        this.LightY = 400;
-        this.LightZ = 400;
     };
 
     var gui = new dat.GUI();
 
     //Folders
     var _this = this;
-    gui.add(this.guiControls, 'filename', this.filename).listen();
     this.guiAppear = gui.addFolder("Appearance");
-    var font = this.guiAppear.add(this.guiControls, 'font');
-    font.onChange(function(value) {
+
+    var labelWidth = this.guiAppear.add(this.guiControls, 'labelWidth', 1, 60);
+    labelWidth.onChange(function(value) {
         _this.guiChanged();
     });
 
-    var fontSize = this.guiAppear.add(this.guiControls, 'fontSize', 10, 36);
-    fontSize.onChange(function(value) {
-        _this.guiChanged();
-    });
-
-    var fontWidth = this.guiAppear.add(this.guiControls, 'fontWidth', 1, 50);
-    fontWidth.onChange(function(value) {
-        _this.guiChanged();
-    });
-
-    var fontHeight = this.guiAppear.add(this.guiControls, 'fontHeight', 1, 50);
-    fontHeight.onChange(function(value) {
+    var labelHeight = this.guiAppear.add(this.guiControls, 'labelHeight', 1, 50);
+    labelHeight.onChange(function(value) {
         _this.guiChanged();
     });
 
@@ -406,11 +386,6 @@ VisApp.prototype.createGUI = function() {
     yAxisScale.onChange(function(value) {
         _this.guiChanged();
     });
-
-    var renderStyle = this.guiAppear.add(this.guiControls, 'RenderStyle', ['Cull', 'Colour', 'Transparent']).onChange(function(value) {
-        _this.styleChanged(value);
-    });
-    renderStyle.listen();
 
     this.guiAppear.add(this.guiControls, 'NodeStyle', ['Sphere', 'Cube', 'Diamond']).onChange(function(value) {
         _this.updateRequired = true;
@@ -441,37 +416,11 @@ VisApp.prototype.createGUI = function() {
         _this.labelChanged(value);
     });
 
-    //Light
-    this.guiAppear.add(this.guiControls, 'LightX', -this.lightRange, this.lightRange).onChange(function(value) {
-        _this.changeLightPos(value, -1);
-    });
-    this.guiAppear.add(this.guiControls, 'LightY', -this.lightRange, this.lightRange).onChange(function(value) {
-        _this.changeLightPos(value, 0);
-    });
-    this.guiAppear.add(this.guiControls, 'LightZ', -this.lightRange, this.lightRange).onChange(function(value) {
-        _this.changeLightPos(value, 1);
-    });
-
     this.guiData = gui.addFolder("Data");
     this.gui = gui;
 };
 
 VisApp.prototype.guiChanged = function() {
-    this.updateRequired = true;
-};
-
-VisApp.prototype.styleChanged = function(value) {
-    switch (value) {
-        case 'Cull':
-            this.renderStyle = RENDER_CULL;
-            break;
-        case 'Colour':
-            this.renderStyle = RENDER_COLOUR;
-            break;
-        case 'Transparent':
-            this.renderStyle = RENDER_TRANSPARENT;
-            break;
-    }
     this.updateRequired = true;
 };
 
@@ -563,7 +512,7 @@ VisApp.prototype.generateData = function() {
         var minYear = this.guiControls.year - diff;
         var maxYear = this.guiControls.year + diff;
         var renderState = RENDER_NORMAL;
-        var renderStyle = this.renderStyle; //RENDER_TRANSPARENT;
+
         //DEBUG
         //console.log("Max=", maxYear, " min=", minYear);
         if(xAxis >= 0 && yAxis >= 0) {
@@ -603,9 +552,9 @@ VisApp.prototype.generateData = function() {
                 }
             }
 
-            if(renderState != RENDER_NORMAL && renderStyle == RENDER_CULL) continue;
+            if(renderState != RENDER_NORMAL) continue;
 
-            var nodeMaterial = renderState == RENDER_NORMAL ? defaultMaterial : renderStyle == RENDER_COLOUR ? colourMaterial : transparentMaterial;
+            var nodeMaterial = renderState == RENDER_NORMAL ? defaultMaterial :  transparentMaterial;
             //var node = new THREE.Mesh(sphereGeometry, updateRequired ? updateRequired.material : material);
             var node = new THREE.Mesh(nodeGeometry, nodeMaterial);
             node.position.x = item[this.xAxisName] * this.guiControls.xAxisScale;
@@ -624,9 +573,6 @@ VisApp.prototype.generateData = function() {
                 var top = this.guiControls.LabelTop == '' ? null : this.guiControls.LabelTop;
                 var bottom = this.guiControls.LabelBottom == '' ? null : this.guiControls.LabelBottom;
                 var colour = this.guiControls.Text;
-                if(renderState != RENDER_NORMAL && renderStyle == RENDER_COLOUR) {
-                    colour = [20, 20, 20];
-                }
                 this.generateLabels(item[top], item[bottom], labelPos, colour, this.guiControls.Label, this.guiControls.Border, nodeMaterial.opacity ? nodeMaterial.opacity : 1);
             }
         }
@@ -647,8 +593,8 @@ VisApp.prototype.getDataItem = function(name) {
 
 VisApp.prototype.generateLabels = function(topName, bottomName, position, textColour, labelColour, borderColour, opacity) {
 
-    var fontSize = this.guiControls.fontSize;
-    var scale = new THREE.Vector3(this.guiControls.fontWidth, this.guiControls.fontHeight, 1);
+    var fontSize = 18;
+    var scale = new THREE.Vector3(this.guiControls.labelWidth, this.guiControls.labelHeight, 1);
     position.top = true;
     if(textColour != undefined) {
         spriteManager.setTextColour(textColour);
@@ -730,8 +676,6 @@ function createLabel(name, position, scale, colour, fontSize, opacity) {
 }
 
 VisApp.prototype.generateGUIControls = function() {
-    //Add filename to gui
-    this.guiControls.filename = this.filename;
 
     //Get UI controls to add
     var i, index;
@@ -862,56 +806,11 @@ VisApp.prototype.toggleSlider = function(slider) {
     this.updateRequired = true;
 };
 
-VisApp.prototype.changeLightPos = function(value, axis) {
-    //Change light pos
-    var light = this.scene.getObjectByName('PointLight', true);
-    var box = this.scene.getObjectByName('lightBox', true);
-    if(!light || !box) {
-        console.log('No light or light box');
-        return;
-    }
-    switch(axis) {
-        case -1:
-            //X-axis
-            light.position.x = value;
-            box.position.x = value;
-            break;
-
-        case 0:
-            //Y-Axis
-            light.position.y = value;
-            box.position.y = value;
-            break;
-
-        case 1:
-            //Z-Axis
-            light.position.z = value;
-            box.position.z = value;
-            break;
-
-        default:
-            break;
-    }
-};
-
 VisApp.prototype.changeView = function(view) {
     //Alter cam view
     this.controls.reset();
-    switch (view) {
-        case FRONT:
-            this.camera.position.set(170, 60, 380);
-            break;
-        case RIGHT:
-            this.camera.position.set(460, 35, 0);
-            break;
-        case LEFT:
-            this.camera.position.set(-240, 35, 0);
-            break;
-        case TOP:
-            this.camera.position.set(180, 470, 0);
-            break;
-    }
-    this.controls.setLookAt(new THREE.Vector3(170, 70, 0));
+    this.camera.position.set(200, 110, 260);
+    this.controls.setLookAt(new THREE.Vector3(170, 90, 0));
 };
 
 VisApp.prototype.savePreset = function() {
@@ -926,10 +825,9 @@ VisApp.prototype.savePreset = function() {
     var showSlider = this.guiControls.ShowSlider;
     var sliderPos = this.guiControls.year;
     var sliderWidth = this.guiControls.Selection;
-    var renderStyle = this.guiControls.RenderStyle;
 
     var presetDetails = {pos : tempCamPos, rot : tempCamRot, look : tempLookat,
-                         showSlider : showSlider, sliderPos : sliderPos, sliderWidth : sliderWidth, renderStyle : renderStyle};
+                         showSlider : showSlider, sliderPos : sliderPos, sliderWidth : sliderWidth};
 
     this.camPos.push(presetDetails);
 
@@ -957,8 +855,6 @@ VisApp.prototype.gotoNextPreset = function() {
     this.toggleSlider(presetDetails.showSlider);
     this.guiControls.year = presetDetails.sliderPos;
     this.guiControls.Selection = presetDetails.sliderWidth;
-    this.guiControls.RenderStyle = presetDetails.renderStyle;
-    this.styleChanged(presetDetails.renderStyle);
     this.updateRequired = true;
 
     //Update preset value
@@ -991,8 +887,6 @@ VisApp.prototype.gotoPreviousPreset = function() {
     this.toggleSlider(presetDetails.showSlider);
     this.guiControls.year = presetDetails.sliderPos;
     this.guiControls.Selection = presetDetails.sliderWidth;
-    this.guiControls.RenderStyle = presetDetails.renderStyle;
-    this.styleChanged(presetDetails.renderStyle);
     this.updateRequired = true;
 
     //Update preset value
@@ -1022,7 +916,6 @@ VisApp.prototype.reset = function() {
     this.filename = "";
 
     //Clear gui controls
-    this.guiControls.filename = null;
     this.guiControls = null;
     this.guiAppear = null;
     this.guiData = null;
