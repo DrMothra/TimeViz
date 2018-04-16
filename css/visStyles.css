@@ -1,9 +1,6 @@
 /* Styles for webgl visualisations */
 
 body {
-
-}
-.render {
     /* set margin to 0 and overflow to hidden, to go fullscreen */
     margin: 0;
     overflow: hidden;
@@ -92,9 +89,6 @@ body {
 }
 #camRight {
     float: left;
-}
-#infoText {
-    padding-left: 10%;
 }
 .info {
     margin: 0 auto 5% auto;
