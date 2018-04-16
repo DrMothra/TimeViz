@@ -44,6 +44,7 @@ body {
 }
 .details p {
     margin: 0;
+    font-weight: bold;
 }
 .mainButton {
     border-radius: 5px;

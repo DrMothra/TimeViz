@@ -223,6 +223,16 @@ VisApp.prototype.update = function() {
     }
 };
 
+VisApp.prototype.updateYear = function(year) {
+    this.guiControls.year = parseInt(year);
+    this.updateRequired = true;
+};
+
+VisApp.prototype.updateRange = function(range) {
+    this.guiControls.Selection = parseInt(range);
+    this.updateRequired = true;
+};
+
 VisApp.prototype.createScene = function() {
     //Init base createsScene
     BaseApp.prototype.createScene.call(this);
@@ -500,17 +510,18 @@ VisApp.prototype.generateData = function() {
     //Keep track of which nodes have been visited
     var visited = {};
     var updateRequired;
+    var item, xAxis, yAxis, year, selection, minYear, maxYear, renderState;
     this.nodesInSlider = 0;
     for(var i=0; i<this.data.length; ++i) {
         //Only render nodes with valid axis values
-        var item = this.data[i];
-        var xAxis = item[this.xAxisName];
-        var yAxis = item[this.yAxisName];
-        var year = item[this.timeAxis];
-        var diff = this.guiControls.Selection/2;
-        var minYear = this.guiControls.year - diff;
-        var maxYear = this.guiControls.year + diff;
-        var renderState = RENDER_NORMAL;
+        item = this.data[i];
+        xAxis = item[this.xAxisName];
+        yAxis = item[this.yAxisName];
+        year = item[this.timeAxis];
+        selection = this.guiControls.Selection/2;
+        minYear = this.guiControls.year - selection;
+        maxYear = this.guiControls.year + selection;
+        renderState = RENDER_NORMAL;
 
         //DEBUG
         //console.log("Max=", maxYear, " min=", minYear);
@@ -523,7 +534,7 @@ VisApp.prototype.generateData = function() {
                 var renderNode = true;
                 for(var key in extraData) {
                     //Different action for numeric filtering
-                    if(extraData[key] != "" && extraData[key] != item[key]) {
+                    if(extraData[key] !== "" && extraData[key] !== item[key]) {
                         if(typeof extraData[key] === 'number') {
                             if(extraData[key] <= item[key]) {
                                 renderState = RENDER_STYLE;
@@ -551,9 +562,9 @@ VisApp.prototype.generateData = function() {
                 }
             }
 
-            if(renderState != RENDER_NORMAL) continue;
+            if(renderState !== RENDER_NORMAL) continue;
 
-            var nodeMaterial = renderState == RENDER_NORMAL ? defaultMaterial :  transparentMaterial;
+            var nodeMaterial = renderState === RENDER_NORMAL ? defaultMaterial :  transparentMaterial;
             //var node = new THREE.Mesh(sphereGeometry, updateRequired ? updateRequired.material : material);
             var node = new THREE.Mesh(nodeGeometry, nodeMaterial);
             node.position.x = item[this.xAxisName] * this.guiControls.xAxisScale;
@@ -569,8 +580,8 @@ VisApp.prototype.generateData = function() {
             nodes.push(node);
             this.scene.add(node);
             if(this.guiControls.ShowLabels) {
-                var top = this.guiControls.LabelTop == '' ? null : this.guiControls.LabelTop;
-                var bottom = this.guiControls.LabelBottom == '' ? null : this.guiControls.LabelBottom;
+                var top = this.guiControls.LabelTop === '' ? null : this.guiControls.LabelTop;
+                var bottom = this.guiControls.LabelBottom === '' ? null : this.guiControls.LabelBottom;
                 var colour = this.guiControls.Text;
                 this.generateLabels(item[top], item[bottom], labelPos, colour, this.guiControls.Label, this.guiControls.Border, nodeMaterial.opacity ? nodeMaterial.opacity : 1);
             }
@@ -739,7 +750,7 @@ VisApp.prototype.generateGUIControls = function() {
             //Add slider depth info
             this.guiControls.Selection = 10;
             this.guiControls.ShowSlider = true;
-            var selection = this.guiData.add(this.guiControls, 'Selection', 0, (max-min)*2).step(2);
+            var selection = this.guiData.add(this.guiControls, 'Selection', 1, (max-min)*2).step(2);
             selection.listen();
             selection.onChange(function(value) {
                 _this.updateRequired = true;
@@ -1075,6 +1086,22 @@ $(document).ready(function() {
                 alert("Couldn't save screenshot");
             }
         }
+    });
+
+    var currentYearElem = $('#yearNumber');
+    var currentYear;
+    currentYearElem.on("input", function() {
+        currentYear = currentYearElem.val();
+        //console.log("Year = ", currentYear);
+        app.updateYear(currentYear);
+    });
+
+    var currentRangeElem = $('#yearRange');
+    var currentRange;
+    currentRangeElem.on("input", function() {
+        currentRange = currentRangeElem.val();
+        //console.log("Range = ", currentRange);
+        app.updateRange(currentRange);
     });
 
     $(document).keydown(function(event) {
