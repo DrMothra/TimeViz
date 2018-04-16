@@ -232,10 +232,11 @@ input[type=range]:focus::-ms-fill-upper {
         width: 10%;
     }
     #information {
+        top: 5px;
         width: 20%;
     }
     #instructions {
-        width: 7.5%;
+        width: 5%;
     }
 }
 
