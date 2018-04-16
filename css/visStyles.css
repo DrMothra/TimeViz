@@ -5,29 +5,17 @@ body {
     margin: 0;
     overflow: hidden;
 }
-#WebGL-output {
-    /* set margin to 0 and overflow to hidden, to go fullscreen */
-    margin: 0;
-    overflow: hidden;
-}
-#infopanel {
-    text-align: center;
+.infoPanel {
     position: absolute;
-    top: 1%;
+}
+#information {
+    top: 3%;
     left: 0.5%;
     width: 12.5%;
 }
-.version {
-    color: #7fa5ff;
-}
+#information
 .hidden {
     display: none;
-}
-.centred {
-    text-align: center;
-}
-.left {
-    text-align: left;
 }
 #title {
     position: absolute;
@@ -41,10 +29,20 @@ body {
     vertical-align: middle;
 }
 #instructions {
-
+    bottom: 2%;
+    left: 2%;
+    width: 5%;
 }
-#infopanel img {
-    width: 30%;
+#instructions img {
+    width: 100%;
+}
+.details {
+    background-color: #8e8e8e;
+    border-radius: 10px;
+    margin: 5% 0;
+}
+.details p {
+    margin: 0;
 }
 .mainButton {
     border-radius: 5px;
