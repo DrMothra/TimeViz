@@ -67,8 +67,8 @@ gulp.task("copy", function() {
 });
 
 gulp.task("concatJS", function() {
-    gulp.src(["build/js/three71.min.js", "build/js/jquery-3.3.1.slim.min.js", "build/js/helvetiker_regular.typeface.min.js", "build/js/TrackballControls.min.js", "build/js/dat.gui.min.js", "build/js/Blob.min.js",
-                "build/js/canvas-toBlob.min.js", "build/js/FileSaver.min.js", "build/js/baseApp.min.js", "build/js/dataLoader.min.js", "build/js/spriteManager.min.js", "build/js/visual.min.js"])
+    gulp.src(["build/js/three71.min.js", "build/js/jquery-3.3.1.slim.min.js", "build/js/bootstrap.min.js", "build/js/helvetiker_regular.typeface.min.js", "build/js/TrackballControls.min.js", "build/js/dat.gui.min.js", "build/js/Blob.min.js",
+                "build/js/canvas-toBlob.min.js", "build/js/FileSaver.min.js", "build/js/Detector.min.js", "build/js/baseApp.min.js", "build/js/dataLoader.min.js", "build/js/spriteManager.min.js", "build/js/visual.min.js"])
         .pipe(concat("build.min.js"))
         .pipe(gulp.dest("dist/js/"));
 });
