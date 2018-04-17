@@ -350,8 +350,8 @@ VisApp.prototype.reDraw = function() {
 VisApp.prototype.createGUI = function() {
     //Create GUI - use dat.GUI for now
     this.guiControls = new function() {
-        this.labelWidth = 35;
-        this.labelHeight = 20;
+        this.labelWidth = 40;
+        this.labelHeight = 30;
         this.xAxisScale = 1.2;
         this.yAxisScale = 10;
         this.ShowLabels = true;
