@@ -17,6 +17,19 @@ body {
 .hidden {
     display: none;
 }
+#notSupported {
+    top: 40%;
+    left: 10%;
+    width: 80%;
+    background-color: #3e3e3e;
+    color: white;
+    font-size: 2.5vw;
+    border-radius: 15px;
+    padding: 1%;
+}
+#notSupported p img {
+    width: 25%;
+}
 #title {
     position: absolute;
     top: 1%;
@@ -42,6 +55,7 @@ body {
     border-radius: 10px;
     margin: 5% 0;
     border: 1px solid black;
+    color: lightgrey;
 }
 .details p {
     margin: 0;
@@ -238,13 +252,23 @@ input[type=range]:focus::-ms-fill-upper {
     #instructions {
         width: 5%;
     }
+    #notSupported {
+        top: 25%;
+    }
+    #notSupported p img {
+        width: 20%;
+    }
 }
-
 @media (min-width: 576px) and (orientation: portrait) {
     #information {
         top: 2.5%;
     }
     #instructions {
         width: 7.5%;
+    }
+}
+@media (min-width: 768px) {
+    #notSupported p img {
+        width: 15%;
     }
 }

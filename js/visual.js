@@ -1043,8 +1043,16 @@ function addTimeSlider(group, width, height, depth) {
 //Only executed our code once the DOM is ready.
 var FRONT= 0, RIGHT= 1, LEFT= 2, TOP=3;
 $(document).ready(function() {
-    //Initialise app
-    //skel.init();
+    //See if WebGL supported
+    if(!Detector.webgl) {
+        $('#notSupported').removeClass("d-none");
+        return;
+    }
+
+    //Information for users
+    $('#mainModal').modal();
+
+    //Initialise ap
     var container = document.getElementById("WebGL-output");
     var app = new VisApp();
     app.init(container);
@@ -1107,6 +1115,11 @@ $(document).ready(function() {
 
     $(document).keydown(function(event) {
         app.keydown(event);
+    });
+
+    //Instructions
+    $('#instructions').on("click", function() {
+        $('#instructionModal').modal();
     });
 
     app.run();

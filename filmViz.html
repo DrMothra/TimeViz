@@ -12,12 +12,14 @@
 
     <script type="text/javascript" src="js/three71.js"></script>
     <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/helvetiker_regular.typeface.js"></script>
     <script type="text/javascript" src="js/TrackballControls.js"></script>
     <script type="text/javascript" src="js/dat.gui.js"></script>
     <script type="text/javascript" src="js/Blob.js"></script>
     <script type="text/javascript" src="js/canvas-toBlob.js"></script>
     <script type="text/javascript" src="js/FileSaver.js"></script>
+    <script type="text/javascript" src="js/Detector.js?v=0.1"></script>
     <script type="text/javascript" src="js/baseApp.js?v=0.2"></script>
     <script type="text/javascript" src="js/dataLoader.js"></script>
     <script type="text/javascript" src="js/spriteManager.js"></script>
@@ -25,6 +27,48 @@
 
 </head>
 <body>
+<!-- General modal -->
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="mainModalLabel">Film Visualisation</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Visualisations typically look better when viewed on a larger display, please consider this when using the app.<br>
+                    Hope you enjoy!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instruction modal -->
+    <div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-labelledby="instructionModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="instructionModalLabel">Film Visualisation</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    The highest grossing horror films as of 2014 shown by year they were released.<br>
+                    Use the sliders to select the relevant years and the controls (top-right) for more advanced configuration.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Stats output -->
     <div id="Stats-output">
     </div>
@@ -165,6 +209,12 @@
 
     <div id="instructions" class="infoPanel">
         <img src="images/info.png">
+    </div>
+
+    <div id="notSupported" class="infoPanel text-center d-none">
+        <p>
+            <img src="images/warning.png"> Your browser does not support WebGL. Please update to the latest version of Chrome or Firefox.
+        </p>
     </div>
 
 </body>
